@@ -4,59 +4,42 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Checkbox : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
+public class Checkbox : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 {
-    // Start is called before the first frame update
-
-    // Définition de l'enum (réutilisable par d'autres)
-    public enum playerState
-    {
-        None = 0,
-        PlayerOne = 1,
-        PlayerTwo
-    }
-
     // Variables de la classe
 
-    public Sprite Check;
-    public playerState currentContent;
-    GameCtrl myGame;
+    public GameController Game;
+    public int ID;
+    bool canClick;
 
     void Start()
     {
-        //HoverMe();
-        myGame = FindObjectOfType<GameCtrl>();
-        
+        Game = FindObjectOfType<GameController>();
+        canClick = true;
     }
 
-    
 
-    // Update is called once per frame
-    void Update()
+
+    public void OnPointerClick(PointerEventData eventData)
     {
-      
-    }
-    public void HoverMe()
-    {
-        Debug.Log("I'm here" + name, this);
+        if (!canClick) return;
+        if (Game.currentTurn == GameController.Turns.Victory || Game.currentTurn == GameController.Turns.Defeat) return;
+        canClick = false;
+
+
+        if(Game.currentTurn == GameController.Turns.PlayerOne)
+        {
+            GetComponent<Image>().sprite = Game.spriteOne;
+        }
+        else if(Game.currentTurn == GameController.Turns.PlayerTwo)
+        {
+            GetComponent<Image>().sprite = Game.spriteTwo;
+        }
+        Game.changeTurn(ID);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Enter Me" + name, this);
 
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Debug.Log("Click Me" + name, this);
-        GetComponent<Image>().sprite = myGame.playerOneCheckbox;
-        currentContent = playerState.PlayerOne;
-
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        Debug.Log("Exit Me" + name, this);
     }
 }
